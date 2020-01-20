@@ -18,6 +18,6 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
         setRenderer(renderer)
 
         // Render the view only when there is a change in the drawing data
-        renderMode = RENDERMODE_WHEN_DIRTY
+//        renderMode = RENDERMODE_WHEN_DIRTY
     }
 }
