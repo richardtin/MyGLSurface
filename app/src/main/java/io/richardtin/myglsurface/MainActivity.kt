@@ -1,12 +1,20 @@
 package io.richardtin.myglsurface
 
-import androidx.appcompat.app.AppCompatActivity
+import android.opengl.GLSurfaceView
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var glView: GLSurfaceView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        // Create a GLSurfaceView instance and set it
+        // as the ContentView for this Activity.
+        glView = MyGLSurfaceView(this)
+        setContentView(glView)
     }
+
 }
