@@ -13,6 +13,8 @@ var triangleCoords = floatArrayOf(     // in counterclockwise order:
 
 class Triangle {
 
+    // Use to access and set the view transformation
+    private var vPMatrixHandle: Int = 0
     private var positionHandle: Int = 0
     private var colorHandle: Int = 0
 
@@ -20,9 +22,10 @@ class Triangle {
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
     private val vertexShaderCode =
-        "attribute vec4 vPosition;" +
+        "uniform mat4 uMVPMatrix;" +
+                "attribute vec4 vPosition;" +
                 "void main() {" +
-                "  gl_Position = vPosition;" +
+                "  gl_Position = uMVPMatrix * vPosition;" +
                 "}"
 
     private val fragmentShaderCode =
@@ -72,7 +75,7 @@ class Triangle {
         }
     }
 
-    fun draw() {
+    fun draw(mvpMatrix: FloatArray) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(glProgram)
 
@@ -98,6 +101,12 @@ class Triangle {
                 // Set color for drawing the triangle
                 GLES20.glUniform4fv(location, 1, color, 0)
             }
+
+            // get handle to shape's transformation matrix
+            vPMatrixHandle = GLES20.glGetUniformLocation(glProgram, "uMVPMatrix")
+
+            // Pass the projection and view transformation to the shader
+            GLES20.glUniformMatrix4fv(vPMatrixHandle, 1, false, mvpMatrix, 0)
 
             // Draw the triangle
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount)
