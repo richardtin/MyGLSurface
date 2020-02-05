@@ -33,7 +33,12 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
         val y: Float = event.y
 
         when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                renderer.resetPathCoords()
+                renderer.appendPointToPathCoords(x, y, 0f)
+            }
             MotionEvent.ACTION_MOVE -> {
+                renderer.appendPointToPathCoords(x, y, 0f)
 
                 var dx: Float = x - previousX
                 var dy: Float = y - previousY

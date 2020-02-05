@@ -3,6 +3,7 @@ package io.richardtin.myglsurface
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
+import android.util.Log
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -14,11 +15,26 @@ class MyGLRenderer : GLSurfaceView.Renderer {
     private val viewMatrix = FloatArray(16)
     private val rotationMatrix = FloatArray(16)
 
+    // Screen size
+    private var screenWidth: Int = 0
+        set(value) {
+            field = value
+            screenCenterX = value.toFloat() / 2f
+        }
+    private var screenHeight: Int = 0
+        set(value) {
+            field = value
+            screenCenterY = value.toFloat() / 2f
+        }
+    private var screenCenterX = 0f
+    private var screenCenterY = 0f
+
     @Volatile
     var angle: Float = 0f
 
     private lateinit var triangle: Triangle
     private lateinit var square: Square
+    private lateinit var path: Path
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         // Set the background frame color
@@ -28,7 +44,8 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         triangle = Triangle()
         // initialize a square
         square = Square()
-
+        // initialize a path
+        path = Path()
     }
 
     override fun onDrawFrame(unused: GL10) {
@@ -56,9 +73,30 @@ class MyGLRenderer : GLSurfaceView.Renderer {
 
         // Draw triangle
         triangle.draw(scratch)
+
+        // Draw path
+        path.draw(vPMatrix)
+    }
+
+    fun resetPathCoords() {
+        path.pathCoords = floatArrayOf()
+    }
+
+    fun appendPointToPathCoords(x: Float, y: Float, z: Float) {
+        path.pathCoords = path.pathCoords.plus(
+            floatArrayOf(
+                (screenCenterX - x) / screenWidth * 3.65f,
+                (screenCenterY - y) / screenHeight * 2.1f,
+                z
+            )
+        )
     }
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
+        screenWidth = width
+        screenHeight = height
+        Log.d(TAG, "onSurfaceChanged(): width = $width, height = $height")
+
         GLES20.glViewport(0, 0, width, height)
 
         val ratio: Float = width.toFloat() / height.toFloat()
@@ -69,6 +107,8 @@ class MyGLRenderer : GLSurfaceView.Renderer {
     }
 
     companion object {
+        private val TAG = MyGLRenderer::class.java.simpleName
+
         fun loadShader(type: Int, shaderCode: String): Int {
 
             // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
