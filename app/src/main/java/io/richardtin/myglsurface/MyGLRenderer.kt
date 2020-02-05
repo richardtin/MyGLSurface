@@ -29,6 +29,10 @@ class MyGLRenderer : GLSurfaceView.Renderer {
     private var screenCenterX = 0f
     private var screenCenterY = 0f
 
+    // FPS
+    private var frameCountingStart = 0L
+    private var frameCount: Int = 0
+
     @Volatile
     var angle: Float = 0f
 
@@ -49,6 +53,8 @@ class MyGLRenderer : GLSurfaceView.Renderer {
     }
 
     override fun onDrawFrame(unused: GL10) {
+        outputFps()
+
         val scratch = FloatArray(16)
 
         // Redraw background color
@@ -104,6 +110,18 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
+    }
+
+    private fun outputFps() {
+        val now = System.nanoTime()
+        if (frameCountingStart == 0L) {
+            frameCountingStart = now
+        } else if (now - frameCountingStart > 1000000000) {
+            Log.d(TAG, "fps: ${frameCount.toDouble() * 1000_000_000 / (now - frameCountingStart)}")
+            frameCountingStart = now
+            frameCount = 0
+        }
+        ++frameCount
     }
 
     companion object {
