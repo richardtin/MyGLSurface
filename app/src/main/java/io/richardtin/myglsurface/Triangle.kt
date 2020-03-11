@@ -6,9 +6,9 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
 var triangleCoords = floatArrayOf(     // in counterclockwise order:
-    0.0f, 0.622008459f, 0.0f,      // top
-    -0.5f, -0.311004243f, 0.0f,    // bottom left
-    0.5f, -0.311004243f, 0.0f      // bottom right
+    0.0f, 622.008459f, 0.0f,      // top
+    -500f, -311.004243f, 0.0f,    // bottom left
+    500f, -311.004243f, 0.0f      // bottom right
 )
 
 class Triangle {

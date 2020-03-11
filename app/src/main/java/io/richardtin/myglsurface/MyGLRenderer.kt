@@ -89,27 +89,45 @@ class MyGLRenderer : GLSurfaceView.Renderer {
     }
 
     fun appendPointToPathCoords(x: Float, y: Float, z: Float) {
-        path.pathCoords = path.pathCoords.plus(
-            floatArrayOf(
-                (screenCenterX - x) / screenWidth * 3.65f,
-                (screenCenterY - y) / screenHeight * 2.1f,
-                z
-            )
-        )
+        path.pathCoords =
+            path.pathCoords.plus(floatArrayOf(screenCenterX - x, screenCenterY - y, z))
     }
 
-    override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
+    override fun onSurfaceChanged(gl: GL10, width: Int, height: Int) {
         screenWidth = width
         screenHeight = height
         Log.d(TAG, "onSurfaceChanged(): width = $width, height = $height")
 
-        GLES20.glViewport(0, 0, width, height)
+        gl.apply {
+            glViewport(0, 0, width, height)
+            glMatrixMode(GL10.GL_PROJECTION)
+            glLoadIdentity()
+        }
 
         val ratio: Float = width.toFloat() / height.toFloat()
 
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
+//        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
+
+//        GLES10.glOrthox(
+//            -screenCenterX.toInt(),
+//            screenCenterX.toInt(),
+//            -screenCenterY.toInt(),
+//            screenCenterY.toInt(),
+//            -1,
+//            1
+//        )
+        Matrix.orthoM(
+            projectionMatrix,
+            0,
+            -screenCenterX,
+            screenCenterX,
+            -screenCenterY,
+            screenCenterY,
+            3f,
+            7f
+        )
     }
 
     private fun outputFps() {

@@ -8,10 +8,10 @@ import java.nio.ShortBuffer
 
 // number of coordinates per vertex in this array
 var squareCoords = floatArrayOf(
-    -0.5f, 0.5f, 0.0f,      // top left
-    -0.5f, -0.5f, 0.0f,      // bottom left
-    0.5f, -0.5f, 0.0f,      // bottom right
-    0.5f, 0.5f, 0.0f       // top right
+    -500f, 500f, 0.0f,      // top left
+    -500f, -500f, 0.0f,      // bottom left
+    500f, -500f, 0.0f,      // bottom right
+    500f, 500f, 0.0f       // top right
 )
 
 class Square {
